@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Создание заказа</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+        }
+
+        .btn-blue {
+            background-color: #007bff;
+        }
+
+        .btn-blue:hover {
+            background-color: #0069d9;
+        }
+
+        .btn-green {
+            background-color: #28a745;
+            margin-top: 10px;
+        }
+
+        .btn-green:hover {
+            background-color: #218838;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .status-badge {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            border-left: 5px solid #28a745;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="step-1" class="card">
+        <h2>Инициализация нового заказа</h2>
+        <form id="main-order-form" method="post" action="">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="customer_id">ID Клиента:</label>
+                <input type="number" id="customer_id" name="customer_id" min="1"
+                    placeholder="Введите ID клиента (например: 1)" required>
+            </div>
+            <button type="submit" class="btn-blue">Создать пустой заказ в БД</button>
+        </form>
+    </div>
+
+    <div id="step-2" class="card hidden">
+        <div class="status-badge">
+            ✓ Заказ успешно инициализирован для клиента №<span id="client-id-span"></span>!
+        </div>
+
+        <h3>Добавление позиций в заказ</h3>
+
+        <div class="form-group">
+            <label for="local_product_id">Выбрать товар:</label>
+            <select id="local_product_id">
+                <option value="">-- Выберите товар из списка --</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="local_quantity">Количество:</label>
+            <input type="number" id="local_quantity" min="1" value="1">
+        </div>
+
+        <button type="button" id="add-item-btn" class="btn-green">Добавить товар в список</button>
+
+        <h4 style="margin-top: 25px;">Выбранные товары в заказе:</h4>
+        <table id="items-table">
+            <thead>
+                <tr>
+                    <th>ID Товара</th>
+                    <th>Количество</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+        <br>
+        <button type="button" onclick="finalizeOrder()" style="background-color: #6c757d;">Подтвердить отправку заказа
+            на сервер</button>
+    </div>
+
+    <script>
+        const mainForm = document.getElementById('main-order-form');
+
+        mainForm.addEventListener('submit', function (e) {
+            e.preventDefault(); 
+            const customerId = document.getElementById('customer_id').value;
+            const formData = new FormData(this);
+
+            fetch(window.location.href, {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+                .then(() => {
+                    document.getElementById('step-1').classList.add('hidden');
+                    document.getElementById('step-2').classList.remove('hidden');
+                    document.getElementById('client-id-span').innerText = customerId;
+                })
+                .catch(err => alert('Ошибка при создании заказа: ' + err));
+        });
+
+        document.getElementById('add-item-btn').addEventListener('click', function () {
+            const prodId = document.getElementById('local_product_id').value;
+            const qty = document.getElementById('local_quantity').value;
+
+            if (!prodId || qty < 1) {
+                alert('Заполните ID товара и количество!');
+                return;
+            }
+
+            const tbody = document.getElementById('items-table').getElementsByTagName('tbody')[0];
+            const newRow = tbody.insertRow();
+
+            newRow.innerHTML = `<td>${prodId}</td><td>${qty} шт.</td>`;
+
+            document.getElementById('local_product_id').value = '';
+            document.getElementById('local_quantity').value = '1';
+        });
+
+        function finalizeOrder() {
+            alert('Все позиции обработаны. Возвращаемся в профиль клиента.');
+            const customerId = document.getElementById('customer_id').value;
+            window.location.href = `/customers/${customerId}/orders/`;
+        }
+    document.addEventListener("DOMContentLoaded", function() {
+    fetch('/products/') 
+    .then(response => response.text())
+    .then(html => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        const rows = doc.querySelectorAll('table tbody tr'); 
+        const select = document.getElementById('local_product_id');
+        
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            if (cells.length >= 2) {
+                const id = cells[0].innerText.trim();   
+                const name = cells[1].innerText.trim(); 
+                
+                const option = document.createElement('option');
+                option.value = id;
+                option.text = `${name} (ID: ${id})`;
+                select.appendChild(option);
+            }
+        });
+    }).catch(err => console.log("Не удалось автоматически загрузить товары: ", err));
+});
+    </script>
+</body>
+
+</html>

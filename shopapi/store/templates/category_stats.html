@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Статистика по категориям</title>
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        
+        /* Стили для подсветки топ-категории по выручке */
+        .top-category {
+            background-color: #d4edda !important; /* Светло-зеленый фон */
+            font-weight: bold;
+            color: #155724;
+        }
+        .badge {
+            background-color: #28a745;
+            color: white;
+            padding: 3px 7px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Статистика по категориям товаров</h1>
+
+    {% if categories %}
+    <table>
+        <thead>
+            <tr>
+                <th>Категория</th>
+                <th>Число товаров</th>
+                <th>Продано единиц</th>
+                <th>Выручка</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cat in categories %}
+            <tr class="{% if cat.is_top %}top-category{% endif %}">
+                <td>
+                    {{ cat.name }}
+                    {% if cat.is_top %}
+                        <span class="badge">Топ по выручке</span>
+                    {% endif %}
+                </td>
+                <td>{{ cat.products_count }}</td>
+                <td>{{ cat.units_sold }}</td>
+                <td>{{ cat.revenue }} руб.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>Данные о статистике категорий отсутствуют.</p>
+    {% endif %}
+
+    <br>
+    <a href="javascript:history.back()">Назад</a>
+</body>
+</html>

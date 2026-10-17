@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Заказы клиента</title>
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Заказы клиента №{{ customer_id }}</h1>
+
+    {% if orders %}
+    <table>
+        <thead>
+            <tr>
+                <th>Дата заказа</th>
+                <th>Сумма заказа</th>
+                <th>Средний чек клиента</th>
+                <th>Действие</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.date|date:"d.m.Y H:i" }}</td>
+                <td>{{ order.total_amount }} руб.</td>
+                <td>{{ order.avg_check }} руб.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>У данного клиента пока нет заказов.</p>
+    {% endif %}
+
+    <br>
+    <a href="javascript:history.back()">Назад</a>
+</body>
+</html>
