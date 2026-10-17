@@ -59,3 +59,12 @@
 * `/customers/<id>/orders/` — Заказы клиента (вызов `sp_customer_orders` и расчет `fn_customer_avg_check`).
 * `/stats/categories/` — Статистика по категориям (`sp_category_stats` с подсветкой топ-категории).
 * `/discount/` — Форма расчёта скидки (вызов функции `fn_customer_discount`).
+
+  ## 4. Скриншоты работающих страниц
+  <img width="525" height="307" alt="image" src="https://github.com/user-attachments/assets/d3d1da94-ab87-4c43-b309-5a19abe87158" />
+<img width="506" height="207" alt="image" src="https://github.com/user-attachments/assets/01264f92-57f7-4592-b27f-033d51c3f62a" />
+<img width="371" height="507" alt="image" src="https://github.com/user-attachments/assets/9bc32e8b-728b-4ec2-bf75-fb33474dac6f" />
+<img width="722" height="611" alt="image" src="https://github.com/user-attachments/assets/8f663562-f740-4785-b841-1ba525c1fb31" />
+<img width="808" height="368" alt="image" src="https://github.com/user-attachments/assets/37092639-63d9-469a-ad33-f176303c47ad" />
+<img width="934" height="323" alt="image" src="https://github.com/user-attachments/assets/85f34a89-b00d-4ce5-a056-34449dda84c3" />
+<img width="545" height="343" alt="image" src="https://github.com/user-attachments/assets/901db6b1-5cfe-48df-acc9-93409ac86071" />
